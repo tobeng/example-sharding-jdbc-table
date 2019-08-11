@@ -1,0 +1,28 @@
+server:
+  port: 8090
+
+spring:
+  shardingsphere:
+    datasource:
+      # 数据源配置
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        password:
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/test?characterEncoding=utf-8
+        username: root
+      names: master
+    sharding:
+      tables:
+        user:
+          # 分表配置
+          actual-data-nodes: master.user_${0..3}
+          table-strategy:
+            # inline 表达式
+#            inline:
+#              algorithm-expression: user_${id.longValue() % 4}
+#              sharding-column: id
+            # 自定义分表算法
+            standard:
+              sharding-column: id
+              precise-algorithm-class-name: com.tobeng.example.algorithm.MyPreciseAlgorithm
